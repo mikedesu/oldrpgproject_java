@@ -114,45 +114,24 @@ public class Renderer
 			_y += DEFAULT_TILE_SIZE + DEFAULT_DISTANCE_BETWEEN_TILES;
 		}
 	}
-	
+	public void drawEntity(Graphics g, Entity e)
+	{
+		int dx1,dx2,dy1,dy2;
+		dx1 = e.x * DEFAULT_TILE_SIZE + world.camera.x;
+		dy1 = e.y * DEFAULT_TILE_SIZE + world.camera.y;
+		dx2 = dx1 + DEFAULT_TILE_SIZE;
+		dy2 = dy1 + DEFAULT_TILE_SIZE;	
+		g.drawImage(e.sprite.image, dx1, dy1, dx2, dy2, 0, 0, DEFAULT_TILE_SIZE, DEFAULT_TILE_SIZE, null);
+	}
 	
 	
 	public void drawEntities(Graphics g)
 	{
-		int dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, pad;
-		sx1 = 0; 
-		sy1 = 0;
-		sx2 = DEFAULT_TILE_SIZE;
-		sy2 = DEFAULT_TILE_SIZE;
-		
-		dx1 = 0;
-		dy1 = 0;
-		dx2 = dx1 + DEFAULT_TILE_SIZE;
-		dy2 = dy1 + DEFAULT_TILE_SIZE;
-		
-		pad = 0;
-		
-		
 		for (int i=0; i<world.entities.size(); i++)
 		{
 			Entity e = world.entities.get(i);
 			
-			if (e == this.world.input.entity)
-			{
-				dx1 = (5) * DEFAULT_TILE_SIZE;
-				dy1 = (5) * DEFAULT_TILE_SIZE;
-				dx2 = (dx1) + DEFAULT_TILE_SIZE;
-				dy2 = (dy1) + DEFAULT_TILE_SIZE;
-			}
-			else 
-			{
-				dx1 = e.x * DEFAULT_TILE_SIZE + pad;
-				dy1 = e.y * DEFAULT_TILE_SIZE + pad;
-				dx2 = dx1 + DEFAULT_TILE_SIZE;
-				dy2 = dy1 + DEFAULT_TILE_SIZE;	
-			}
-			
-			g.drawImage(world.entities.get(i).sprite.image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+			this.drawEntity(g, e);
 		}
 	}
 }

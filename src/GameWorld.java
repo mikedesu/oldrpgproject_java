@@ -26,23 +26,21 @@ public class GameWorld
 	
 	public void init() 
 	{	
-		ArrayList<String> map2 = new ArrayList<String>();
-		map2.add("##################################");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("#................................#");
-		map2.add("##################################");
-		
-		
-		this.loadMap(map2);
+		ArrayList<String> map = new ArrayList<String>();
+		map.add("##################################");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("#................................#");
+		map.add("##################################");
+		this.loadMap(map);
 		
 		//set the sprites and their keys
 		this.sprites.add("Selector",   "res/selector.png");	
@@ -51,11 +49,13 @@ public class GameWorld
 		this.sprites.add("tile_stone", "res/tiles/stone.png");
 		this.sprites.add("tile_water", "res/tiles/water.png");
 		this.sprites.add("tile_empty", "res/tiles/empty.png");
-				
-		Entity selector = new Entity("Selector", sprites.get("Selector"));
-		selector.x = 5;
-		selector.y = 5;
+		this.sprites.add("enemy",      "res/enemy.png");
+		
+		Entity selector = new Entity("Selector", sprites.get("Selector"), 5, 5);
 		this.entities.add(selector);
+		
+		Entity enemy = new Entity("Enemy", sprites.get("enemy"), 1, 1);
+		this.entities.add(enemy);
 		
 		input.entity = selector;
 	}
