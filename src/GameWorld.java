@@ -1,6 +1,7 @@
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 
 public class GameWorld 
@@ -35,6 +36,7 @@ public class GameWorld
 
 	SpriteMap sprites;
 	ArrayList<Entity> entities;
+	//Hashtable<String, Entity> entities;
 	ArrayList<String> messages;
 	String messageBuffer;
 	
@@ -49,6 +51,7 @@ public class GameWorld
 		state = 0;
 		this.input = input;
 		entities = new ArrayList<Entity>();
+		//entities = new Hashtable<String, Entity>();
 		//this.fillMapWithTile('0');
 		sprites = new SpriteMap();
 		selected = null;
@@ -266,7 +269,8 @@ public class GameWorld
 				messages.add("Selected " + selectedstring + " from the menu");
 				
 				if (selectedstring.equalsIgnoreCase("move")) {
-					
+					state = STATE_ENTITY_MOVE;
+					messages.add("Move " + selected.name + " to where?");
 				}
 				
 				else if (selectedstring.equalsIgnoreCase("status")) {
@@ -318,11 +322,43 @@ public class GameWorld
 		
 		else if (state==STATE_ENTITY_MOVE)
 		{
+			//enter
+			if (key==10) {
+				messages.add("Hit enter");
+				int dx = input.entity.x - selected.x;
+				int dy = input.entity.y - selected.y;
+				System.out.println("dx: " + dx + " dy: " + dy);
+				moveEntity(selected, dx, dy);
+				//back to default state...leave unit selected. You'll most likely use it again
+				state = STATE_DEFAULT;
+				//selected = null;
+			}
+			
 			//esc
 			if (key==27) {
 				state = STATE_ENTITY_MENU;
 				//messages.add("Exitted help");
 			}
+			//left
+			else if (key==37) {
+				moveEntity(input.entity, -1, 0);
+			}
+			
+			//up
+			else if (key==38) {
+				moveEntity(input.entity, 0, -1);
+			}
+			
+			//right
+			else if (key==39) {
+				moveEntity(input.entity, 1, 0);
+			}
+			
+			//down
+			else if (key==40) {
+				moveEntity(input.entity, 0, 1);
+			}
+
 		}
 		
 		
@@ -349,6 +385,22 @@ public class GameWorld
 			}
 			else {
 				System.err.println("Attempted to take cursor outside of map! " + (e.x+dx) + " " + (e.y+dy) + "");
+				messages.add("Attempted to take entity outside of map! " + (e.x+dx) + " " + (e.y+dy) + "");
+			}
+		}
+		else
+		{
+			if (! (e.x+dx < 0 || e.y+dy < 0 || e.x+dx >= map[0].length || e.y+dy >= map.length))
+			{
+				e.x += dx;
+				e.y += dy;
+				//e._x = - dx * DEFAULT_TILE_SIZE;
+				//e._y = - dy * DEFAULT_TILE_SIZE;
+				//this.moveCamera(-dx * DEFAULT_TILE_SIZE, -dy * DEFAULT_TILE_SIZE);
+				//this.moveCamera(dx, dy);
+			}
+			else {
+				//System.err.println("Attempted to take cursor outside of map! " + (e.x+dx) + " " + (e.y+dy) + "");
 				messages.add("Attempted to take entity outside of map! " + (e.x+dx) + " " + (e.y+dy) + "");
 			}
 		}

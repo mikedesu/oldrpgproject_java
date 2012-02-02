@@ -80,8 +80,13 @@ public class Renderer
 		g.drawString("World State: " + world.getStringForState(world.state), x, y+=15);
 		
 		//selected entity
+		String m = "Selected Entity: ";
 		if (world.selected!=null)
-			g.drawString("Selected Entity: " + world.selected.name, x, y+=15);
+			m += world.selected.name;
+		else
+			m += "null";
+			
+		g.drawString(m, x, y+=15);
 		
 		
 		//draw messages in most recent->least recent order...most recent N messages
@@ -180,6 +185,9 @@ public class Renderer
 		dy2 = dy1 + world.DEFAULT_TILE_SIZE;
 		
 		//if (e._x<0 && e._y<0) { e._x++; e._y++; }
+		//if the entity is selected, draw the cursor under it before drawing it
+		if (e == world.selected)
+			g.drawImage(world.sprites.get("cursor_blue").image, dx1, dy1, dx2, dy2, 0, 0, world.DEFAULT_TILE_SIZE, world.DEFAULT_TILE_SIZE, null);
 		
 		g.drawImage(e.sprite.image, dx1, dy1, dx2, dy2, 0, 0, world.DEFAULT_TILE_SIZE, world.DEFAULT_TILE_SIZE, null);
 	}
@@ -257,6 +265,9 @@ public class Renderer
 		g.drawString("  Esc - Cancel", dx1, dy1+=15);	
 		g.drawString("  ? - Help Menu", dx1, dy1+=15);	
 		g.drawString("  c - Clear Messages", dx1, dy1+=15);	
+		
+		g.drawString("Press Esc to return", dx1, dy1+=30);	
+		
 		
 		
 	}
