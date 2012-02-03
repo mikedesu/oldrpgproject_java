@@ -1,8 +1,13 @@
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class GameApplet extends Applet implements Runnable, KeyListener
@@ -38,6 +43,41 @@ public class GameApplet extends Applet implements Runnable, KeyListener
 		t = new Thread(this);
 		t.start();
 	}
+	
+	
+	static public void main (String argv[]) {
+		System.out.println("Running main");
+	    final Applet applet = new GameApplet();
+	    System.runFinalizersOnExit(true);
+	    
+	    Frame frame = new Frame (
+	                 "MyApplet");
+	    frame.addWindowListener (
+	                  new WindowAdapter()
+	    {
+	      public void windowClosing (
+	                   WindowEvent event)
+	      {
+	        applet.stop();
+	        applet.destroy();
+	        System.exit(0);
+	      }
+	    });
+	    frame.add (
+	      "Center", applet);
+	    applet.setStub (new MyAppletStub (
+	         argv, applet));
+	    frame.show();
+	    applet.init();
+	    applet.start();
+	    frame.pack();
+	  }
+	
+	
+	
+	
+	
+	
 
 	public void keyPressed(KeyEvent arg0) {
 		this.input.set(arg0.getKeyCode());

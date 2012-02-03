@@ -11,6 +11,7 @@ public class GameWorld
 	final int STATE_ENTITY_MENU = 2;
 	final int STATE_ENTITY_MOVE = 4;
 	final int STATE_HELP = 3;
+	final int STATE_DEBUG_MENU = 5;
 	
 	public String getStringForState(int state) {
 		String s = "";
@@ -19,12 +20,15 @@ public class GameWorld
 		else if (state==STATE_ENTITY_MENU) s = "STATE_ENTITY_MENU";
 		else if (state==STATE_HELP) s = "STATE_HELP";
 		else if (state==STATE_ENTITY_MOVE) s = "STATE_ENTITY_MOVE";
+		else if (state==STATE_DEBUG_MENU) s = "STATE_DEBUG_MENU";
+		
 		return s;
 	}
 	
-	int state;
+	int state, _state;
 	
 	EntityMenu menu = null;
+	DebugMenu debugMenu = null;
 	
 	final int DEFAULT_TILE_SIZE = 64;
 	final int DEFAULT_DISTANCE_BETWEEN_TILES = 0;
@@ -49,6 +53,7 @@ public class GameWorld
 	public GameWorld(InputController input)
 	{
 		state = 0;
+		_state = 0;
 		this.input = input;
 		entities = new ArrayList<Entity>();
 		//entities = new Hashtable<String, Entity>();
@@ -104,6 +109,7 @@ public class GameWorld
 			Entity tmp = new Entity("Enemy"+(count++), sprites.get("enemy"), i, 7);
 			this.entities.add(tmp);
 			messages.add("Spawned " + tmp.name + " at " + i + ", 7");
+			
 		}
 		//count = 0;
 		for (int i=1; i<15; i+=2) {
@@ -172,6 +178,8 @@ public class GameWorld
 	
 	public void handleKeyPress(int key)
 	{
+		//System.out.println("Handle key press");
+		//just a cursor...
 		if (state==STATE_DEFAULT)
 		{
 			switch (key)
@@ -184,6 +192,14 @@ public class GameWorld
 						//state = STATE_ENTER_TEXT;
 				
 						//select current entity at cell and bring up menu for that entity
+						ArrayList<Entity> entitiesAtCell = this.getEntities(input.entity.x, input.entity.y);
+						if (entitiesAtCell.size()>1)
+							for (int i=0; i<entitiesAtCell.size(); i++)
+							{
+								Entity e = entitiesAtCell.get(i);
+								messages.add("Entity " + e.name + " at cell x:" + e.x + " y:" + e.y + " z:" + e.z);
+							}
+				
 						for (int i=0; i<entities.size(); i++)
 						{
 							Entity e = entities.get(i);
@@ -194,6 +210,7 @@ public class GameWorld
 									messages.add("Selected entity " + e +" at x:"+e.x+" y:"+e.y);
 									selected = e;
 									state = STATE_ENTITY_MENU;
+									_state = STATE_DEFAULT;
 									break;
 								}
 							}
@@ -206,7 +223,12 @@ public class GameWorld
 							messages.add("Nothing selected!");
 						break;
 			//esc
-			case 27:	selected = null;
+			case 27:	if (selected!=null)
+							selected = null;
+						else {
+							state = STATE_DEBUG_MENU;
+							_state = STATE_DEFAULT;
+						}
 						break;
 			
 			//left
@@ -246,6 +268,7 @@ public class GameWorld
 			{
 				//close buffer, change state, add buffer to messages
 				state = STATE_DEFAULT;
+				_state = STATE_ENTER_TEXT;
 				messages.add(messageBuffer);
 				messageBuffer = "";
 			}
@@ -270,6 +293,7 @@ public class GameWorld
 				
 				if (selectedstring.equalsIgnoreCase("move")) {
 					state = STATE_ENTITY_MOVE;
+					_state = STATE_ENTITY_MENU;
 					messages.add("Move " + selected.name + " to where?");
 				}
 				
@@ -281,12 +305,14 @@ public class GameWorld
 				}
 				else if (selectedstring.equalsIgnoreCase("help")) {
 					state=STATE_HELP;
+					_state = STATE_ENTITY_MENU;
 				}
 			}
 			
 			//esc
 			else if (key==27) {
 				state = STATE_DEFAULT;
+				_state = STATE_ENTITY_MENU;
 				this.menu = null;
 				//messages.add("Exitted menu");
 			}
@@ -315,7 +341,8 @@ public class GameWorld
 		{
 			//esc
 			if (key==27) {
-				state = STATE_ENTITY_MENU;
+				state = _state;
+				_state = STATE_HELP;
 				messages.add("Exitted help");
 			}
 		}
@@ -331,12 +358,14 @@ public class GameWorld
 				moveEntity(selected, dx, dy);
 				//back to default state...leave unit selected. You'll most likely use it again
 				state = STATE_DEFAULT;
+				_state = STATE_ENTITY_MOVE;
 				//selected = null;
 			}
 			
 			//esc
 			if (key==27) {
 				state = STATE_ENTITY_MENU;
+				_state = STATE_ENTITY_MOVE;
 				//messages.add("Exitted help");
 			}
 			//left
@@ -359,6 +388,58 @@ public class GameWorld
 				moveEntity(input.entity, 0, 1);
 			}
 
+		}
+		
+		else if (state==STATE_DEBUG_MENU)
+		{
+			//enter
+			if (key==10) {
+				String selectedstring = this.debugMenu.get(this.debugMenu.selected);
+				messages.add("Selected " + selectedstring + " from the menu");
+				
+				//i don't think we'll have a "move" case in the debug menu...
+				//more like "load map", "spawn ___", "do impossible X", etc
+				if (selectedstring.equalsIgnoreCase("move")) {
+					//state = STATE_ENTITY_MOVE;
+					//messages.add("Move " + selected.name + " to where?");
+				}
+				
+				else if (selectedstring.equalsIgnoreCase("status")) {
+					
+				}
+				else if (selectedstring.equalsIgnoreCase("info")) {
+					
+				}
+				else if (selectedstring.equalsIgnoreCase("help")) {
+					state=STATE_HELP;
+					_state = STATE_DEBUG_MENU;
+				}
+			}
+			
+			//esc
+			else if (key==27) {
+				state = STATE_DEFAULT;
+				_state = STATE_DEBUG_MENU;
+			}
+			
+			//left
+			else if (key==37) {
+				//moveEntity(selected, -1, 0); 
+			}
+			//up
+			else if (key==38) {
+				//moveEntity(selected, 0, -1); 
+				if (this.debugMenu.selected>0) this.debugMenu.selected--;
+			}
+			//right
+			else if (key==39) {
+				//moveEntity(selected, 1, 0); 
+			}
+			//down
+			else if (key==40) {
+				//moveEntity(selected, 0, 1); 
+				if (this.debugMenu.selected<this.debugMenu.size()-1) this.debugMenu.selected++;
+			}
 		}
 		
 		
@@ -406,6 +487,22 @@ public class GameWorld
 		}
 		
 	}
+	
+	public ArrayList<Entity> getEntities(int x, int y)
+	{
+		//loop thru entities, 
+		ArrayList<Entity> eList = new ArrayList<Entity>();
+		for (Entity e : entities)
+		{
+			if (e.x==x && e.y==y && e!=input.entity)
+				eList.add(e);
+		}
+		
+		return eList;
+	}
+	
+	
+	
 	
 	public void moveCamera(int dx, int dy)
 	{

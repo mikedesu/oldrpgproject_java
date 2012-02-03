@@ -32,6 +32,8 @@ public class Renderer
 		else if (world.state==world.STATE_HELP)
 			this.drawHelpMenu(g);
 		else if (world.state==world.STATE_ENTITY_MOVE) { }
+		else if (world.state==world.STATE_DEBUG_MENU) 
+			this.drawDebugMenu(g);
 	}
 	
 	public void clear(Graphics g)
@@ -77,7 +79,12 @@ public class Renderer
 		g.drawString("Camera: x:" + world.camera.x + "  y:" + world.camera.y + "", x, y+=15);
 		
 		//world state
-		g.drawString("World State: " + world.getStringForState(world.state), x, y+=15);
+		g.drawString("World  State: " + world.getStringForState(world.state), x, y+=15);
+		
+		//world state
+		g.drawString("World _State: " + world.getStringForState(world._state), x, y+=15);
+		
+		
 		
 		//selected entity
 		String m = "Selected Entity: ";
@@ -267,8 +274,42 @@ public class Renderer
 		g.drawString("  c - Clear Messages", dx1, dy1+=15);	
 		
 		g.drawString("Press Esc to return", dx1, dy1+=30);	
+			
+	}
+	
+	public void drawDebugMenu(Graphics g) 
+	{
+		if (this.world.debugMenu == null)
+			this.world.debugMenu = new DebugMenu();
 		
+		int dx1, dx2, dy1, dy2, sx1, sx2, sy1, sy2;
+		dx1 = 50;
+		dy1 = 50;
+		dx2 = dx1 + 350;
+		dy2 = dy1 + 200;
 		
+		sx1 = 0;
+		sy1 = 0;
+		sx2 = world.DEFAULT_TILE_SIZE;
+		sy2 = world.DEFAULT_TILE_SIZE;
+		
+		g.drawImage(this.world.sprites.get("bluemenu").image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+		
+		g.setColor(Color.white);
+		g.setFont(new Font("Courier New", Font.PLAIN, 16));
+		g.drawString("Debug Menu", dx1+10, dy1+=15);
+		
+		//dy1+=5;
+		for (int i=0; i<this.world.debugMenu.size(); i++)
+		{
+			if (this.world.debugMenu.selected==i)
+				g.drawString("> " + this.world.debugMenu.get(i), dx1+10, dy1+=20);
+			else
+				g.drawString(this.world.debugMenu.get(i), dx1+10, dy1+=20);
+		}
+		
+		//g.drawString("", dx1, dy1+=15);	
+		//g.drawString("Nothing else to see here", dx1, dy1+=15);	
 		
 	}
 }

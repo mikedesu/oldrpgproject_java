@@ -8,7 +8,7 @@ public class Entity
 	//int _x, _y, _z;
 	//Point position;
 	boolean isMoving;
-	
+		
 	public Entity(String name, String filepath)
 	{
 		this.name = name;
