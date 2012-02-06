@@ -72,19 +72,13 @@ public class GameWorld
 	public void init() 
 	{	
 		ArrayList<String> map = new ArrayList<String>();
-		map.add("##################################");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("#................................#");
-		map.add("##################################");
+		map.add("#######");
+		map.add("#.....#");
+		map.add("#.....#");
+		map.add("#.....#");
+		map.add("#######");
+
+		
 		this.loadMap(map);
 		
 		//set the sprites and their keys
@@ -105,23 +99,6 @@ public class GameWorld
 		this.entities.add(cursor);
 		
 		//Entity enemy = new Entity("Enemy", sprites.get("enemy"), 7, 7);
-		
-		//ArrayList<Entity> enemies = new ArrayList<Entity>();
-		int count = 0;
-		for (int i=1; i<15; i+=2) {
-			Entity tmp = new Entity("Enemy"+(count++), sprites.get("enemy"), i, 7);
-			this.entities.add(tmp);
-			messages.add("Spawned " + tmp.name + " at " + i + ", 7");
-			
-		}
-		//count = 0;
-		for (int i=1; i<15; i+=2) {
-			Entity tmp = new Entity("Enemy"+(count++), sprites.get("enemy"), i, 5);
-			this.entities.add(tmp);
-			messages.add("Spawned " + tmp.name + " at " + i + ", 5");
-		}
-		
-		
 		
 		//this.entities.add(enemy);
 		
