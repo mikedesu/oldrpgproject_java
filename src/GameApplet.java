@@ -8,11 +8,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
 
 
 public class GameApplet extends Applet implements Runnable, KeyListener
 {
 	int current_frame;
+	long timeToRenderCurrentFrame;
 	//int frame_count;
 	int target_fps;
 	
@@ -23,12 +25,13 @@ public class GameApplet extends Applet implements Runnable, KeyListener
 	
 	public void paint(Graphics g)
 	{
-		renderer.update(g, current_frame);
+		renderer.update(g, current_frame, timeToRenderCurrentFrame);
 	}
 	
 	public void init()
 	{
 		current_frame = 0;
+		timeToRenderCurrentFrame = 0;
 		//frame_count = 0;
 		target_fps = 30;
 		
@@ -95,6 +98,9 @@ public class GameApplet extends Applet implements Runnable, KeyListener
 	{
 		while (true)
 		{
+			long t1 = System.currentTimeMillis();
+			//System.out.println(date1);
+			
 			input.update();
 			world.update();
 			repaint();
@@ -107,6 +113,10 @@ public class GameApplet extends Applet implements Runnable, KeyListener
 			{
 				System.out.println("Thread exception caught while in the Applet run() loop");
 			}
+			
+			timeToRenderCurrentFrame = System.currentTimeMillis() - t1;
+			
+			//System.out.println("t2 = " + t2);
 			current_frame++;
 		}
 	}

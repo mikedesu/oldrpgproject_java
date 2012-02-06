@@ -12,6 +12,7 @@ public class GameWorld
 	final int STATE_ENTITY_MOVE = 4;
 	final int STATE_HELP = 3;
 	final int STATE_DEBUG_MENU = 5;
+	final int STATE_DEBUG_ENTITY_MENU = 6;
 	
 	public String getStringForState(int state) {
 		String s = "";
@@ -21,6 +22,8 @@ public class GameWorld
 		else if (state==STATE_HELP) s = "STATE_HELP";
 		else if (state==STATE_ENTITY_MOVE) s = "STATE_ENTITY_MOVE";
 		else if (state==STATE_DEBUG_MENU) s = "STATE_DEBUG_MENU";
+		else if (state==STATE_DEBUG_ENTITY_MENU) s = "STATE_DEBUG_ENTITY_MENU";
+		
 		
 		return s;
 	}
@@ -351,7 +354,7 @@ public class GameWorld
 		{
 			//enter
 			if (key==10) {
-				messages.add("Hit enter");
+				//messages.add("Hit enter");
 				int dx = input.entity.x - selected.x;
 				int dy = input.entity.y - selected.y;
 				System.out.println("dx: " + dx + " dy: " + dy);
@@ -395,15 +398,15 @@ public class GameWorld
 			//enter
 			if (key==10) {
 				String selectedstring = this.debugMenu.get(this.debugMenu.selected);
-				messages.add("Selected " + selectedstring + " from the menu");
+				messages.add("Selected " + selectedstring + " from the debugMenu");
 				
 				//i don't think we'll have a "move" case in the debug menu...
 				//more like "load map", "spawn ___", "do impossible X", etc
-				if (selectedstring.equalsIgnoreCase("move")) {
-					//state = STATE_ENTITY_MOVE;
-					//messages.add("Move " + selected.name + " to where?");
+				if (selectedstring.equalsIgnoreCase("entity")) {
+					//need to draw a 2nd menu...DebugEntityMenu
+					state = STATE_DEBUG_ENTITY_MENU;
+					_state = STATE_DEBUG_MENU;
 				}
-				
 				else if (selectedstring.equalsIgnoreCase("status")) {
 					
 				}
@@ -439,6 +442,72 @@ public class GameWorld
 			else if (key==40) {
 				//moveEntity(selected, 0, 1); 
 				if (this.debugMenu.selected<this.debugMenu.size()-1) this.debugMenu.selected++;
+			}
+		}
+		
+		else if (state==STATE_DEBUG_ENTITY_MENU)
+		{
+			//enter
+			if (key==10) {
+				String selected = this.debugMenu.submenu.get(this.debugMenu.selected_sub);
+				messages.add("Selected " + selected);
+				
+				if (selected.equalsIgnoreCase("create new entity")) {
+					//create entity menu
+					//for now, just drop an enemy
+					Entity tmp = new Entity("Enemy", sprites.get("enemy"), this.input.entity.x, this.input.entity.y);
+					this.entities.add(tmp);
+					messages.add("Created new entity at x: "+this.input.entity.x + " y: "+this.input.entity.y );
+				}
+				
+				else if (selected.equalsIgnoreCase("delete entity")) {
+					//delete entity at space				
+					for (int i=0; i<entities.size(); i++) {
+						Entity e = entities.get(i);
+						//make sure we dont remove the cursor
+						if (this.input.entity != e && e.x == input.entity.x && e.y == input.entity.y) {
+							//remove entity
+							try {
+							entities.remove(e);
+							} catch (Exception ex) { ex.printStackTrace(); }
+						}
+					}
+				}
+				//else if (selected.equalsIgnoreCase("create new entity type")) {
+					
+				//}
+				//else if (selected.equalsIgnoreCase("create new entity type")) {
+					
+				//}
+				
+
+				
+				
+			}
+			//esc
+			else if (key==27) {
+				//go back to previous state
+				//int __state = state;
+				state = _state;
+				//_state = __state;
+			}
+			//left
+			else if (key==37) {
+				//moveEntity(selected, -1, 0); 
+			}
+			//up
+			else if (key==38) {
+				//moveEntity(selected, 0, -1); 
+				if (this.debugMenu.selected_sub>0) this.debugMenu.selected_sub--;
+			}
+			//right
+			else if (key==39) {
+				//moveEntity(selected, 1, 0); 
+			}
+			//down
+			else if (key==40) {
+				//moveEntity(selected, 0, 1); 
+				if (this.debugMenu.selected_sub<this.debugMenu.submenu.size()-1) this.debugMenu.selected_sub++;
 			}
 		}
 		

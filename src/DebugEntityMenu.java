@@ -1,29 +1,24 @@
 import java.util.ArrayList;
 
 
-public class EntityMenu 
+public class DebugEntityMenu 
 {
 	int selected;
 	String title;
 	ArrayList<String> menu;
 	
-	public EntityMenu()
+	public DebugEntityMenu()
 	{
 		selected = 0;
-		title = "Entity Menu";
+		title = "Debug Entity";
 		menu = new ArrayList<String>();
-		menu.add("Default entry");
 		
-	}
-	
-	public EntityMenu(Entity e)
-	{
-		this();
-		menu.removeAll(menu);
-		menu.add("Move");
-		menu.add("Status");
-		menu.add("Info");
-		menu.add("Help");
+		menu.add("Create New Entity");
+		menu.add("Delete Entity");
+		//menu.add("Create New Entity Type");
+		//menu.add("Edit Existing Entity");
+		//menu.add("Edit Existing Entity Type");
+		//menu.add("About");
 	}
 	
 	public void add(String s)
@@ -40,5 +35,4 @@ public class EntityMenu
 	{
 		return menu.size();
 	}
-
 }

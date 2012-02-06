@@ -17,14 +17,14 @@ public class Renderer
 		//this.world.camera = new Rectangle(x * world.DEFAULT_TILE_SIZE, y * world.DEFAULT_TILE_SIZE, width, height);
 	}
 	
-	public void update(Graphics g, int frame)
+	public void update(Graphics g, int frame, long timeToRender)
 	{
 		this.clear(g);
 		//this.drawCameraView(g);
 		//this.drawMap(g);
 		this.drawMapWithOffset(g, world.camera.x, world.camera.y);
 		this.drawEntities(g);
-		this.drawDebugPanel(g, frame, world.input.entity);	
+		this.drawDebugPanel(g, frame, timeToRender, world.input.entity);	
 		if (world.state==world.STATE_ENTER_TEXT)
 			this.drawMessageBuffer(g);
 		else if (world.state==world.STATE_ENTITY_MENU)
@@ -34,6 +34,10 @@ public class Renderer
 		else if (world.state==world.STATE_ENTITY_MOVE) { }
 		else if (world.state==world.STATE_DEBUG_MENU) 
 			this.drawDebugMenu(g);
+		else if (world.state==world.STATE_DEBUG_ENTITY_MENU) {
+			this.drawDebugMenu(g);
+			this.drawDebugSubMenu(g);
+		}
 	}
 	
 	public void clear(Graphics g)
@@ -60,7 +64,7 @@ public class Renderer
 	
 	
 	
-	public void drawDebugPanel(Graphics g, int frame, Entity cursor)
+	public void drawDebugPanel(Graphics g, int frame, long timeToRender, Entity cursor)
 	{
 		int x = 5;
 		int y = 5;
@@ -69,7 +73,7 @@ public class Renderer
 		
 		g.setFont(new Font("Courier New", Font.PLAIN, 16));
 		g.setColor(Color.white);
-		g.drawString("Frame: "+frame, x+=5, y+=15);
+		g.drawString("Frame: "+frame+"   Draw Time: "+timeToRender+"ms", x+=5, y+=15);
 		g.drawString("This is the debug panel. Configure it in Renderer.java", x, y+=15);
 		
 		//cursor
@@ -229,7 +233,12 @@ public class Renderer
 		g.drawImage(this.world.sprites.get("bluemenu").image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 		
 		g.setColor(Color.white);
+		g.setFont(new Font("Courier New", Font.BOLD, 16));
+		
+		g.drawString(this.world.menu.title, dx1+10, dy1+=25);
+		
 		g.setFont(new Font("Courier New", Font.PLAIN, 16));
+
 		
 		//dy1+=5;
 		for (int i=0; i<this.world.menu.size(); i++)
@@ -296,8 +305,12 @@ public class Renderer
 		g.drawImage(this.world.sprites.get("bluemenu").image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 		
 		g.setColor(Color.white);
+		
+		g.setFont(new Font("Courier New", Font.BOLD, 16));
+		
+		g.drawString(this.world.debugMenu.title, dx1+10, dy1+=25);
+		
 		g.setFont(new Font("Courier New", Font.PLAIN, 16));
-		g.drawString("Debug Menu", dx1+10, dy1+=15);
 		
 		//dy1+=5;
 		for (int i=0; i<this.world.debugMenu.size(); i++)
@@ -308,8 +321,49 @@ public class Renderer
 				g.drawString(this.world.debugMenu.get(i), dx1+10, dy1+=20);
 		}
 		
+		
 		//g.drawString("", dx1, dy1+=15);	
 		//g.drawString("Nothing else to see here", dx1, dy1+=15);	
 		
+	}
+	
+	public void drawDebugSubMenu(Graphics g)
+	{
+		if (this.world.debugMenu == null)
+			this.world.debugMenu = new DebugMenu();
+		
+		int dx1, dx2, dy1, dy2, sx1, sx2, sy1, sy2;
+		dx1 = 420;
+		dy1 = 50;
+		dx2 = dx1 + 350;
+		dy2 = dy1 + 200;
+		
+		sx1 = 0;
+		sy1 = 0;
+		sx2 = world.DEFAULT_TILE_SIZE;
+		sy2 = world.DEFAULT_TILE_SIZE;
+		
+		g.drawImage(this.world.sprites.get("bluemenu").image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+		
+		g.setColor(Color.white);
+		
+		g.setFont(new Font("Courier New", Font.BOLD, 16));
+		
+		//g.drawString(this.world.debugMenu.title, dx1+10, dy1+=25);
+		
+		g.setFont(new Font("Courier New", Font.PLAIN, 16));
+		
+		//dy1+=5;
+		for (int i=0; i<this.world.debugMenu.submenu.size(); i++)
+		{
+			if (this.world.debugMenu.selected_sub==i)
+				g.drawString("> " + this.world.debugMenu.submenu.get(i), dx1+10, dy1+=20);
+			else
+				g.drawString(this.world.debugMenu.submenu.get(i), dx1+10, dy1+=20);
+		}
+		
+		
+		//g.drawString("", dx1, dy1+=15);	
+		//g.drawString("Nothing else to see here", dx1, dy1+=15);
 	}
 }
