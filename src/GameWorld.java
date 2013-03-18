@@ -10,9 +10,11 @@ public class GameWorld
 	final int STATE_ENTER_TEXT = 1;
 	final int STATE_ENTITY_MENU = 2;
 	final int STATE_ENTITY_MOVE = 4;
+	final int STATE_ENTITY_FREEMOVE = 8;
 	final int STATE_HELP = 3;
 	final int STATE_DEBUG_MENU = 5;
 	final int STATE_DEBUG_ENTITY_MENU = 6;
+	
 	
 	public String getStringForState(int state) {
 		String s = "";
@@ -23,7 +25,7 @@ public class GameWorld
 		else if (state==STATE_ENTITY_MOVE) s = "STATE_ENTITY_MOVE";
 		else if (state==STATE_DEBUG_MENU) s = "STATE_DEBUG_MENU";
 		else if (state==STATE_DEBUG_ENTITY_MENU) s = "STATE_DEBUG_ENTITY_MENU";
-		
+		else if (state==STATE_ENTITY_FREEMOVE) s = "STATE_ENTITY_FREEMOVE";
 		
 		return s;
 	}
@@ -95,7 +97,7 @@ public class GameWorld
 		this.sprites.add("bluemenu",   "res/bluemenu.png");
 		
 		
-		Entity cursor = new Entity("Cursor", sprites.get("cursor_blue"), 5, 5);
+		Entity cursor = new Entity("Cursor", sprites.get("cursor_blue"), 6, 5);
 		this.entities.add(cursor);
 		
 		//Entity enemy = new Entity("Enemy", sprites.get("enemy"), 7, 7);
@@ -287,6 +289,11 @@ public class GameWorld
 					state=STATE_HELP;
 					_state = STATE_ENTITY_MENU;
 				}
+				else if (selectedstring.equalsIgnoreCase("free move")) {
+					state=STATE_ENTITY_FREEMOVE;
+					_state = STATE_ENTITY_MENU;
+					
+				}
 			}
 			
 			//esc
@@ -325,6 +332,42 @@ public class GameWorld
 				_state = STATE_HELP;
 				messages.add("Exitted help");
 			}
+		}
+		
+		else if (state==STATE_ENTITY_FREEMOVE)
+		{
+			//enter 10
+			if (key==10) {
+				messages.add("Hit enter in freemove");
+			}
+			//esc 27
+			else if (key==27) {
+				state = _state;
+				_state = STATE_ENTITY_FREEMOVE;
+				messages.add("Exitted freemove");
+			}
+			//LURD  37 38 39 40
+			else if (key==37) {
+				this.moveEntity(selected, -1, 0);
+				this.moveEntity(input.entity, -1, 0);
+				//this.moveCamera(-1, 0);
+			}
+			else if (key==38) {
+				this.moveEntity(selected, 0, -1);
+				this.moveEntity(input.entity, 0, -1);
+				//this.moveCamera(0, -1);
+			}
+			else if (key==39) {
+				this.moveEntity(selected, 1, 0);
+				this.moveEntity(input.entity, 1, 0);
+				//this.moveCamera(1, 0);
+			}
+			else if (key==40) {
+				this.moveEntity(selected, 0, 1);
+				this.moveEntity(input.entity, 0, 1);
+				//this.moveCamera(0, 1);
+			}
+			
 		}
 		
 		else if (state==STATE_ENTITY_MOVE)
@@ -450,9 +493,12 @@ public class GameWorld
 						}
 					}
 				}
-				//else if (selected.equalsIgnoreCase("create new entity type")) {
-					
-				//}
+				else if (selected.equalsIgnoreCase("list entities")) {
+					//list entities on console
+					for (Entity e : this.entities) {
+						System.out.println("Entity: " + e);
+					}
+				}
 				//else if (selected.equalsIgnoreCase("create new entity type")) {
 					
 				//}

@@ -21,6 +21,7 @@ public class EntityMenu
 		this();
 		menu.removeAll(menu);
 		menu.add("Move");
+		menu.add("Free Move");
 		menu.add("Status");
 		menu.add("Info");
 		menu.add("Help");

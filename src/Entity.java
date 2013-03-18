@@ -47,7 +47,7 @@ public class Entity
 	
 	public String toString()
 	{
-		return this.name;
+		return this.name + " x:" + x + " y:" + y + "  filePath:" + this.sprite.filepath;
 	}
 	
 	

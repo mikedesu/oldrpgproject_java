@@ -15,6 +15,7 @@ public class DebugEntityMenu
 		
 		menu.add("Create New Entity");
 		menu.add("Delete Entity");
+		menu.add("List Entities");
 		//menu.add("Create New Entity Type");
 		//menu.add("Edit Existing Entity");
 		//menu.add("Edit Existing Entity Type");

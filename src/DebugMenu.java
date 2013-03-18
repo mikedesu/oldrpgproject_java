@@ -49,6 +49,7 @@ public class DebugMenu
 			this.clearSubMenu();
 			submenu.add("Create New Entity");
 			submenu.add("Delete Entity");
+			submenu.add("List Entities");
 		}
 		//help
 		else if (selected==1) {
